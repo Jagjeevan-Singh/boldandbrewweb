@@ -1,0 +1,67 @@
+/* styles/Login.css */
+
+.login-container {
+  max-width: 400px;
+  margin: auto;
+  padding: 2rem;
+  background: #fff;
+  border-radius: 1rem;
+  box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+  text-align: center;
+}
+
+.login-box h2 {
+  margin-bottom: 1.5rem;
+  color: #333;
+}
+
+.input {
+  width: 100%;
+  padding: 0.75rem;
+  margin: 0.5rem 0;
+  border-radius: 0.5rem;
+  border: 1px solid #ccc;
+  font-size: 1rem;
+}
+
+.btn {
+  width: 100%;
+  padding: 0.75rem;
+  margin: 0.5rem 0;
+  border: none;
+  border-radius: 0.5rem;
+  background: #333;
+  color: white;
+  cursor: pointer;
+  font-weight: bold;
+  transition: background 0.3s ease;
+}
+
+.btn:hover {
+  background: #555;
+}
+
+.btn.google {
+  background: #de5246;
+}
+
+.btn.otp {
+  background: #0066cc;
+}
+
+.btn.verify {
+  background: #28a745;
+}
+
+.btn.logout {
+  background: #dc3545;
+}
+
+.btn.register {
+  background: #17a2b8;
+}
+
+.divider {
+  margin: 1rem 0;
+  color: #aaa;
+}
