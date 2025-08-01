@@ -1,18 +1,16 @@
 body {
   margin: 0;
   font-family: 'Poppins', sans-serif;
-  background: linear-gradient(to bottom right, #fff3e0, #ffe0b2);
+  background: none;
   color: #3e2723;
   overflow-x: hidden;
+  background: none;
 }
 
 .header, footer {
-  background: rgba(62, 39, 35, 0.95);
+  background: rgb(88, 69, 52);
   color: white;
   padding: 1rem 2rem;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
   backdrop-filter: blur(10px);
 }
 
@@ -24,7 +22,7 @@ nav a {
   transition: 0.3s;
 }
 nav a:hover {
-  color: #ffcc80;
+  color: #b19d8e;
 }
 
 .hero-section {
@@ -45,6 +43,7 @@ nav a:hover {
 
 .products {
   padding: 3rem 2rem;
+  background-color: rgba(255, 255, 255, 0.6);;
 }
 .product-grid {
   display: flex;
@@ -53,7 +52,7 @@ nav a:hover {
   gap: 1.5rem;
 }
 .product {
-  background: white;
+  background: rgba(255, 255, 255, 0.8);;
   border-radius: 10px;
   padding: 1rem;
   width: 220px;
@@ -65,7 +64,7 @@ nav a:hover {
 .product button {
   margin-top: 10px;
   padding: 10px;
-  background: #bf360c;
+  background: #ffffff;
   color: white;
   border: none;
   cursor: pointer;
@@ -110,11 +109,12 @@ footer {
   padding: 2rem;
 }
 .wishlist {
-  background-color: #fffde7;
+  background-color: rgba(255, 253, 231, 0.6)
 }
 .about {
   background-color: #fce4ec;
   color: #4e342e;
+  background: rgba(255, 253, 248, 0.6);
 }
 .buttons {
   display: flex;
@@ -141,7 +141,7 @@ footer {
 }
 
 .badge {
-  background-color: crimson;
+  background-color: rgb(221, 221, 221);
   color: white;
   font-size: 12px;
   padding: 2px 6px;
@@ -153,6 +153,7 @@ footer {
 .cart {
   padding: 2rem;
   background: #fdfdfd;
+  background-color: rgba(249, 249, 249, 0.6);
 }
 
 .cart-table {
@@ -216,27 +217,31 @@ html, body, #root {
 
 /* Flex layout wrapper */
 .app-container {
+  position: fixed;
   display: flex;
   flex-direction: column;
   min-height: 100vh;
+  z-index: 1;
 }
 
 /* Main content will grow to fill space */
 .main-content {
+  margin-top: 96px; /* Adjust based on actual Header height */
   flex: 1;
+  z-index: 1;
+  position: relative;
 }
 footer {
   background: #4e342e;
+  background-color: rgba(62, 39, 35, 0.8);
   color: white;
-  text-align: center;
-  padding: 1rem;
 }
 .header {
   display: flex;
   align-items: center;
   justify-content: space-between;
   padding: 1rem 2rem;
-  background-color: #4e342e;
+  background-color: rgba(62, 39, 35, 0.8);
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
 }
 
@@ -263,7 +268,7 @@ footer {
 }
 
 .badge {
-  background-color: crimson;
+  background-color: rgb(255, 29, 29);
   color: #ccc;
   font-size: 12px;
   padding: 2px 6px;
@@ -393,7 +398,7 @@ footer {
   justify-content: center;
   gap: 5px;
   padding: 8px;
-  background: #bf360c;
+  background: #5a4533;
   color: white;
   border: none;
   border-radius: 6px;
@@ -404,11 +409,15 @@ footer {
 }
 
 .product-buttons button:hover {
-  background: #e64a19;
+  background: #b19d8e;
 }
 
 .product-card {
-  border: 1px solid red;
+  color: #eee;
+  background: none;
+  background-color: rgba(255, 255, 255, 1
+  );
+  border: 2px solid #5a4533;
   padding: 10px;
 }
 
@@ -416,4 +425,63 @@ footer {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
   gap: 1rem;
+  color: #eee;
+}
+
+/* Animation styles */
+#logo-anim-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 2;
+  background: none;
+  background-color: none;
+}
+
+#logo-anim {
+  background: none;
+  width: 100px;
+  opacity: 1;
+  animation: blinkAndZoom 3s ease-in-out forwards;
+}
+
+#main-content {
+  opacity: 1;
+  transition: opacity 1s ease-in;
+  background: none;
+}
+
+@keyframes blinkAndZoom {
+  0% {
+    opacity: 0;
+    transform: scale(1);
+  }
+  10% {
+    opacity: 1;
+  }
+  20% {
+    opacity: 0;
+  }
+  30% {
+    opacity: 1;
+  }
+  40% {
+    opacity: 0;
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1)
+  }
+  70% {
+    transform: scale(1.5);
+  }
+  100% {
+    transform: scale(50);
+    opacity: 0;
+  }
 }

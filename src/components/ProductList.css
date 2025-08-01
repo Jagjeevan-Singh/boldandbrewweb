@@ -1,13 +1,14 @@
 .products-section {
   padding: 40px 20px;
-  background: linear-gradient(135deg, #fde2bd, #ffe6cc);
+  background: none;
+  background-color: rgba(255, 255, 255, 0);
   text-align: center;
 }
 
 .section-title {
   font-size: 2rem;
   font-weight: bold;
-  color: #4b2c20;
+  color: #5d4037;
   margin-bottom: 30px;
 }
 
@@ -18,6 +19,8 @@
 }
 
 .product-grid {
+  background: none;
+  background-color: rgba(255, 255, 255, 0);
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
@@ -25,10 +28,11 @@
 }
 
 .product-card {
-  background: #fff;
-  border: 2px solid #ff8c42;
+  background-color: rgba(255, 255, 255, 1);
+  background: none;
+  border: 2px solid #5a4533;
   border-radius: 20px;
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 1);
   width: 280px;
   padding: 20px;
   transition: transform 0.2s ease;
@@ -51,11 +55,11 @@
   font-size: 1.1rem;
   margin: 10px 0;
   cursor: pointer;
-  color: #4b2c20;
+  color: #5d4037;
 }
 
 .price {
-  color: #b02d00;
+  color: #e0d6d2;
   font-size: 1.1rem;
   font-weight: bold;
   margin-bottom: 15px;

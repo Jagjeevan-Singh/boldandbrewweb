@@ -10,7 +10,7 @@ function ProductList({ products, onAdd, onWishlist }) {
 
   return (
     <section className="products-section" data-aos="fade-up">
-      <h2 className="section-title">☕ Our Coffee</h2>
+      <h2 className="section-title">☕ Our Blends</h2>
       <div className="product-grid">
         {products.map((product) => (
           <div key={product.id} className="product-card">
