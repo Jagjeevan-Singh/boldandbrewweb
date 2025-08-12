@@ -1,4 +1,5 @@
-.header {
+ .header {
+  font-family: "poppins", sans-serif;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -43,7 +44,7 @@
 }
 
 /* Icon button */
-.icon-link {
+.icon-navlink {
   position: relative;
   color: #ffffff;
   font-size: 20px;
@@ -53,7 +54,7 @@
   border: none;
 }
 
-.icon-link:hover {
+.icon-navlink:hover {
   color: #b19d8e;
 }
 
@@ -100,4 +101,108 @@
     opacity: 1;
     width: 250px;
   }
+}
+
+.nav-center a {
+  position: relative;
+  text-decoration: none;
+  color: #ffffff;
+  font-weight: 600;
+  font-size: 20px;
+  transition: color 0.3s ease;
+}
+
+.nav-center a.active {
+  color: #b19d8e;
+}
+
+.nav-center a.active::after{
+  content: '';
+  position: absolute;
+  bottom: -6px; /* space between text and dot */
+  left: 50%;
+  transform: translateX(-50%);
+  width: 6px;
+  height: 6px;
+  background-color: #e5c593;
+  border-radius: 50%;
+  transition: opacity 0.3s ease;
+}
+
+/* Optional: Active effect for logo */
+.nav-left .logo.active {
+  filter: brightness(1.2);
+  transform: scale(1.05);
+  transition: all 0.3s ease;
+}
+
+.icon-navlink {
+  position: relative;
+  color: #ffffff;
+  font-size: 20px;
+  text-decoration: none;
+  transition: all 0.3s ease;
+  background: none;
+  border: none;
+  margin-top: 10px;
+}
+
+.icon-navlink.active {
+  color: #b19d8e;
+  transform: scale(1.1);
+
+}
+
+.icon-navlink.active::after {
+  content: '';
+  position: absolute;
+  bottom: -6px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 6px;
+  height: 6px;
+  background-color: #e5c593;
+  border-radius: 50%;
+}
+
+.nav-left .circular-logo {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100px;
+  width: 100px;
+  margin-left: 50px;
+  text-decoration: none;
+  transition: transform 0.3s ease;
+}
+
+.nav-left .circular-logo:hover {
+  transform: rotate(5deg) scale(1.05);
+}
+
+.circular-logo-wrapper {
+  position: relative;
+  width: 120px;
+  height: 120px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.circular-text {
+  position: absolute;
+  top: 0;
+  left: 10;
+  width: 110px;
+  height: 110px;
+  pointer-events: none;
+}
+
+.center-logo {
+  width: 80px;
+  height: 80px;
+  margin-bottom: 10px;
+  margin-left: 1px;
+  object-fit: contain;
+  z-index: 1;
 }

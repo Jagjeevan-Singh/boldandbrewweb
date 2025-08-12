@@ -1,8 +1,10 @@
-import { Link } from 'react-router-dom';
+import { NavLink } from 'react-router-dom';
 import { FaShoppingCart, FaUser, FaSearch, FaHeart } from 'react-icons/fa';
-import logo from '../assets/logo.png';
+import { CircularText } from '../blocks/TextAnimations/CircularText/CircularText.jsx';
 import './Header.css';
 import { useState } from 'react';
+import logo from '../assets/logo.png';
+
 
 function Header({ cartCount = 0 }) {
   const [showSearch, setShowSearch] = useState(false);
@@ -27,25 +29,33 @@ function Header({ cartCount = 0 }) {
 
   return (
     <header className="header">
-      {/* Left: Logo */}
-      <div className="nav-left">
-        <Link to="/">
-          <img src={logo} alt="Bold & Brew Logo" className="logo" />
-        </Link>
-      </div>
+      {/* Left: Circular Text Logo */}
+<div className="nav-left">
+  <NavLink to="/" className="circular-logo">
+    <div className="circular-logo-wrapper">
+      <img src={logo} alt="Bold & Brew Logo" className="center-logo" />
+      <CircularText
+        text="Bold&Brew * Bold&Brew * "
+        onHover="goBonkers"
+        spinDuration={12}
+        className="circular-text"
+      />
+    </div>
+  </NavLink>
+</div>
 
       {/* Center: Titles only */}
       <nav className="nav-center">
-        <Link to="/">Home</Link>
-        <Link to="/products">Products</Link>
-        <Link to="/about">About Us</Link>
-        <Link to="/contact">Contact Us</Link>
+        <NavLink to="/">Home</NavLink>
+        <NavLink to="/products">Products</NavLink>
+        <NavLink to="/about">About Us</NavLink>
+        <NavLink to="/contact">Contact Us</NavLink>
       </nav>
 
       {/* Right: Icons or Search */}
       <div className="nav-right">
         {!showSearch && (
-          <button className="icon-link" onClick={handleSearchClick}>
+          <button className="icon-navlink" onClick={handleSearchClick}>
             <FaSearch />
           </button>
         )} 
@@ -63,16 +73,16 @@ function Header({ cartCount = 0 }) {
           </form>
         )}
 
-        <Link to="/wishlist" className="icon-link">
+        <NavLink to="/wishlist" className="icon-navlink">
           <FaHeart />
-        </Link>
-        <Link to="/cart" className="icon-link">
+        </NavLink>
+        <NavLink to="/cart" className="icon-navlink">
           <FaShoppingCart />
           {cartCount > 0 && <span className="badge">{cartCount}</span>}
-        </Link>
-        <Link to="/login" className="icon-link">
+        </NavLink>
+        <NavLink to="/login" className="icon-navlink">
           <FaUser />
-        </Link>
+        </NavLink>
       </div>
     </header>
   );

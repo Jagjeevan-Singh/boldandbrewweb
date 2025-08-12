@@ -12,6 +12,7 @@ import Wishlist from './components/Wishlist';
 import About from './components/About';
 import RecipeSection from './components/RecipeSection';
 import RecipePage from './components/RecipePage';
+import ContactUs from './components/ContactUs.jsx';
 
 import './App.css';
 import 'slick-carousel/slick/slick.css';
@@ -21,7 +22,9 @@ import espressoImg from './assets/espresso.jpg';
 import cappuccinoImg from './assets/cappuccino.jpg';
 import latteImg from './assets/latte.jpg';
 import logo from './assets/logo.png';
+
 import DotGrid from './blocks/Backgrounds/DotGrid/DotGrid.jsx';
+import {CircularText} from './blocks/TextAnimations/CircularText/CircularText.jsx';
 
 function App() {
   const [cartItems, setCartItems] = useState([]);
@@ -223,6 +226,15 @@ function App() {
                 </Layout>
               }
             />
+            <Route
+              path="/contact"
+              element={
+                <Layout cartCount={cartCount} wishlistCount={wishlistItems.length}>
+                  <ContactUs />
+                </Layout>
+              }
+            />
+                  
           </Routes>
         </Router>
       </div>

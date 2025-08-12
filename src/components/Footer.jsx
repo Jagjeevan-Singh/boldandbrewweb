@@ -10,8 +10,8 @@ const Footer = () => {
         {/* Left: Logo and description */}
         <div className="footer-logo-section">
           <img src={logo} alt="Brand Logo" className="footer-logo" />
-          <p>📞 +91-93104-75549</p>
-          <p>📧 boldandbrew@gmail.com</p>
+          <p> +91-93104-75549</p>
+          <p> boldandbrew@gmail.com</p>
         </div>
 
         {/* Center: Navigation Links */}
