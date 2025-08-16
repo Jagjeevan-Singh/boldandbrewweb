@@ -1,6 +1,7 @@
 // src/firebase.js
 import firebase from 'firebase/compat/app';
 import 'firebase/compat/auth';
+import 'firebase/compat/firestore';
 
 const firebaseConfig = {
   apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
@@ -12,9 +13,12 @@ const firebaseConfig = {
   measurementId: import.meta.env.VITE_FIREBASE_MEASUREMENT_ID,
 };
 
+console.log("Loaded Firebase Config:", firebaseConfig);
+
 firebase.initializeApp(firebaseConfig);
 
 const auth = firebase.auth();
+const db = firebase.firestore();
 const googleProvider = new firebase.auth.GoogleAuthProvider();
 
-export { auth, googleProvider, firebase };
+export { auth, db, googleProvider, firebase };

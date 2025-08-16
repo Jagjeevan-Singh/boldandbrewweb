@@ -10,6 +10,8 @@ function ProductLanding({ products, onAddToCart, onAddToWishlist }) {
   const [selectedImage, setSelectedImage] = useState(product?.mainImage || '');
   const [zoomed, setZoomed] = useState(false);
 
+  console.log('ProductLanding products updated:', products);
+
   if (!product) {
     return <div style={{ padding: '2rem', textAlign: 'center' }}>Product not found</div>;
   }

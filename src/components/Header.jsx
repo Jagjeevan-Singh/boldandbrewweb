@@ -3,6 +3,9 @@ import { FaShoppingCart, FaHeart, FaUser, FaInfoCircle, FaCoffee } from 'react-i
 import logo from '../assets/logo.png'
 
 function Header({ cartCount = 0, wishlistCount = 0 }) {
+  console.log('Cart Count:', cartCount);
+  console.log('Wishlist Count:', wishlistCount);
+
   return (
     <header className="header">
       {/* Logo links to home */}

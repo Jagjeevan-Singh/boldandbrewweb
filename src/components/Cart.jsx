@@ -4,6 +4,8 @@ import './Cart.css';
 function Cart({ cartItems = [], onRemove, onUpdateQuantity, onMoveToWishlist }) {
   const subtotal = cartItems.reduce((sum, item) => sum + item.price * item.quantity, 0);
 
+  console.log('Cart Items:', cartItems); // Debug log
+
   return (
     <div className="cart-page">
       <h2>🛒 Your Shopping Cart</h2>
