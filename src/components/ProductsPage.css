@@ -1,3 +1,24 @@
+/* Wishlist icon top left */
+.wishlist-icon-btn {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  background: none;
+  border: none;
+  color: #bcae9e;
+  font-size: 1.6rem;
+  z-index: 3;
+  cursor: pointer;
+  padding: 4px;
+  transition: color 0.2s;
+}
+.wishlist-icon-btn.wishlisted {
+  color: #e53935;
+}
+.wishlist-icon-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
 .products-page {
   padding: 4rem 2rem;
   background: none;

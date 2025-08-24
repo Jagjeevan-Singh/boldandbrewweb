@@ -4,20 +4,28 @@ import { useState, useEffect } from 'react';
 import Layout from './components/Layout';
 
 import Banner from './components/Banner';
+import BestSellerSection from './components/BestSellerSection';
 import ProductList from './components/ProductList';
 import ProductLanding from './components/ProductLanding';
 import ProductsPage from './components/ProductsPage';
 import Cart from './components/Cart';
 import Wishlist from './components/Wishlist';
 import About from './components/About';
+import Checkout from './components/Checkout';
+import Terms from './components/Terms';
+import PrivacyPolicy from './components/PrivacyPolicy';
+import ReturnPolicy from './components/ReturnPolicy';
 import RecipeSection from './components/RecipeSection';
 import RecipePage from './components/RecipePage';
 import AdminLogin from './components/AdminLogin';
 import Login from './components/Login';
-import AdminDashboard from './components/AdminDashboard';
+import Register from './components/Register';
+import ForgotPassword from './components/ForgotPassword';
+import AdminMain from './components/AdminMain';
 import ContactUs from './components/ContactUs.jsx';
+import OrdersPage from './components/OrdersPage';
 import { getAuth, onAuthStateChanged } from 'firebase/auth';
-import { getFirestore, doc, getDoc } from 'firebase/firestore';
+import { getFirestore, doc, getDoc, collection, onSnapshot, query, where, getDocs } from 'firebase/firestore';
 import './App.css';
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
@@ -31,7 +39,6 @@ import StrongImg from './assets/7030instant.jpg';
 import logo from './assets/logo.png';
 import DotGrid from './blocks/Backgrounds/DotGrid/DotGrid.jsx';
 import { CircularText } from './blocks/TextAnimations/CircularText/CircularText.jsx';
-
 const auth = getAuth();
 const db = getFirestore();
 
@@ -66,6 +73,7 @@ const ProtectedAdminRoute = ({ children }) => {
   return userRole === 'owner' ? children : <Navigate to="/admin-login" />;
 };
 
+
 function App() {
   const [cartItems, setCartItems] = useState([]);
   const [wishlistItems, setWishlistItems] = useState([]);
@@ -73,89 +81,80 @@ function App() {
   const [userRole, setUserRole] = useState(null);
   const [loadingUser, setLoadingUser] = useState(true);
   const [animationDone, setAnimationDone] = useState(false);
+  const [appSearchTerm, setAppSearchTerm] = useState('');
+  window.setAppSearchTerm = setAppSearchTerm;
+  const [products, setProducts] = useState([]);
+  // Coupon logic
+  const [coupon, setCoupon] = useState("");
+  const [discount, setDiscount] = useState(0);
+  const [couponError, setCouponError] = useState("");
 
-  const [products] = useState([
-    {
-      id: 1,
-      name: 'Espresso',
-      brand: 'Bold & Brew',
-      price: 120,
-      originalPrice: 240,
-      description: 'A strong, rich, and aromatic espresso to kickstart your day.',
-      mainImage: espressoImg,
-      images: [espressoImg],
-    },
-    {
-      id: 2,
-      name: 'Cappuccino',
-      brand: 'Bold & Brew',
-      price: 150,
-      originalPrice: 300,
-      description: 'Creamy and foamy cappuccino, the perfect blend of coffee and milk.',
-      mainImage: cappuccinoImg,
-      images: [cappuccinoImg],
-    },
-    {
-      id: 3,
-      name: 'Latte',
-      brand: 'Bold & Brew',
-      price: 160,
-      originalPrice: 320,
-      description: 'Smooth latte with silky milk foam, ideal for a relaxing moment.',
-      mainImage: latteImg,
-      images: [latteImg],
-    },
-    {
-      id: 4,
-      name: 'Vanilla Instant Coffee',
-      brand: 'Bold & Brew',
-      price: 349,
-      originalPrice: 499,
-      description: 'Rich vanilla flavor combined with premium instant coffee.',
-      mainImage: VanillaImg,
-      images: [VanillaImg],
-    },
-    {
-      id: 5,
-      name: 'Hazelnut Instant Coffee',
-      brand: 'Bold & Brew',
-      price: 349,
-      originalPrice: 499,
-      description: 'Indulge in the rich and nutty flavor of hazelnut with our instant coffee.',
-      mainImage: HazelnutImg,
-      images: [HazelnutImg],
-    },
-    {
-      id: 6,
-      name: 'Pure Instant Coffee',
-      brand: 'Bold & Brew',
-      price: 299,
-      originalPrice: 499,
-      description: 'Experience the purest form of coffee with our premium instant blend.',
-      mainImage: PureImg,
-      images: [PureImg],
-    },
-    {
-      id: 7,
-      name: 'Strong Instant Coffee',
-      brand: 'Bold & Brew',
-      price: 249,
-      originalPrice: 499,
-      description: 'For those who prefer a bolder taste, try our strong instant coffee.',
-      mainImage: StrongImg,
-      images: [StrongImg],
-    },
-    {
-      id: 8,
-      name: 'Vanilla Instant Coffee',
-      brand: 'Bold & Brew',
-      price: 349,
-      originalPrice: 499,
-      description: 'Vanilla Flavour Coffee',
-      mainImage: VanillaImg,
-      images: [VanillaImg],
-    },
-  ]);
+  const subtotal = cartItems.reduce((sum, item) => sum + item.price * item.quantity, 0);
+  const discountedTotal = Math.max(subtotal - discount, 0);
+
+  // Helper to fetch and validate coupon
+  const fetchAndApplyCoupon = async (code, currentSubtotal) => {
+    setCouponError("");
+    setDiscount(0);
+    if (!code) return;
+    const trimmed = code.trim().toUpperCase();
+    const q = query(
+      collection(db, "coupons"),
+      where("code", "==", trimmed),
+      where("active", "==", true)
+    );
+    const snap = await getDocs(q);
+    if (snap.empty) {
+      setCouponError("Invalid or expired coupon.");
+      setDiscount(0);
+      return;
+    }
+    const couponDoc = snap.docs[0].data();
+    if (couponDoc.expiry && couponDoc.expiry.toDate() < new Date()) {
+      setCouponError("Coupon expired.");
+      setDiscount(0);
+      return;
+    }
+    if (couponDoc.discountType === "percent") {
+      setDiscount((currentSubtotal * couponDoc.discountValue) / 100);
+    } else {
+      setDiscount(couponDoc.discountValue);
+    }
+  };
+
+  const handleApplyCoupon = async () => {
+    await fetchAndApplyCoupon(coupon, subtotal);
+  };
+
+  // Recalculate discount if cart or coupon changes and coupon is set
+  useEffect(() => {
+    if (coupon) {
+      fetchAndApplyCoupon(coupon, subtotal);
+    } else {
+      setDiscount(0);
+      setCouponError("");
+    }
+    // eslint-disable-next-line
+  }, [subtotal]);
+
+  // Live Firestore product sync
+  useEffect(() => {
+    const unsub = onSnapshot(collection(db, 'products'), (querySnap) => {
+      const items = querySnap.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+      setProducts(items);
+
+      // Sync cart and wishlist with latest stock info
+      setCartItems(prev => prev.map(item => {
+        const live = items.find(p => p.id === item.id);
+        return live ? { ...item, stock: live.stock } : item;
+      }));
+      setWishlistItems(prev => prev.map(item => {
+        const live = items.find(p => p.id === item.id);
+        return live ? { ...item, stock: live.stock } : item;
+      }));
+    });
+    return () => unsub();
+  }, []);
 
   useEffect(() => {
     const savedCart = localStorage.getItem('cart');
@@ -220,10 +219,26 @@ function App() {
     setCartItems((prev) => prev.filter((item) => item.id !== id));
   };
 
-  const addToWishlist = (product) => {
-    setWishlistItems((prev) =>
-      prev.find((item) => item.id === product.id) ? prev : [...prev, product]
+
+  // Toggle isWishlisted on product and update wishlist
+  const handleWishlistToggle = (product) => {
+    setProducts(prev =>
+      prev.map(p =>
+        p.id === product.id
+          ? { ...p, isWishlisted: !p.isWishlisted }
+          : p
+      )
     );
+    setWishlistItems(prev => {
+      const exists = prev.find(item => item.id === product.id);
+      if (exists) {
+        // Remove from wishlist
+        return prev.filter(item => item.id !== product.id);
+      } else {
+        // Add to wishlist
+        return [...prev, { ...product, isWishlisted: true }];
+      }
+    });
   };
 
   const moveToWishlist = (product) => {
@@ -267,20 +282,7 @@ function App() {
           zIndex: 1,
         }}
       >
-        {/* Background Layer */}
-        <div style={{ height: '100vh', position: 'fixed', inset: 0, zIndex: 0, width: '100%' }}>
-          <DotGrid
-            dotSize={2.5}
-            gap={20}
-            baseColor="#b19d8e"
-            activeColor="#1c1c1c"
-            proximity={120}
-            shockRadius={250}
-            shockStrength={5}
-            resistance={500}
-            returnDuration={3}
-          />
-        </div>
+  {/* Background Layer moved to Layout */}
         <Router>
           <Routes>
             {/* Cart Page */}
@@ -293,19 +295,42 @@ function App() {
                     onRemove={removeFromCart}
                     onUpdateQuantity={updateCartQuantity}
                     onMoveToWishlist={moveToWishlist}
-                    onApplyCoupon={() => {}}
-                    coupon={''}
-                    setCoupon={() => {}}
-                    couponError={''}
-                    onCheckout={() => {}}
+                    onApplyCoupon={handleApplyCoupon}
+                    coupon={coupon}
+                    setCoupon={setCoupon}
+                    couponError={couponError}
+                    discount={discount}
+                    subtotal={subtotal}
+                    discountedTotal={discountedTotal}
+                    onCheckout={() => window.location.hash = '#/checkout'}
                   />
+                </Layout>
+              }
+            />
+            <Route
+              path="/checkout"
+              element={
+                <Layout cartCount={cartCount} wishlistCount={wishlistItems.length}>
+                  <Checkout cartItems={cartItems} total={cartItems.reduce((sum, item) => sum + item.price * item.quantity, 0)} />
                 </Layout>
               }
             />
             {/* Login Route */}
             <Route path="/login" element={
+                <Layout cartCount={cartCount} wishlistCount={wishlistItems.length}>
+                  <Login />
+                </Layout>
+            } />
+            {/* Register Route */}
+            <Route path="/register" element={
               <Layout cartCount={cartCount} wishlistCount={wishlistItems.length}>
-                <Login onLogin={() => setLoggedIn(true)} />
+                <Register />
+              </Layout>
+            } />
+            {/* Forgot Password Route */}
+            <Route path="/forgot-password" element={
+              <Layout cartCount={cartCount} wishlistCount={wishlistItems.length}>
+                <ForgotPassword />
               </Layout>
             } />
             {/* Admin Routes */}
@@ -314,7 +339,7 @@ function App() {
               path="/admin/*"
               element={
                 <ProtectedAdminRoute>
-                  <AdminDashboard />
+                  <AdminMain />
                 </ProtectedAdminRoute>
               }
             />
@@ -324,10 +349,11 @@ function App() {
               element={
                 <Layout cartCount={cartCount} wishlistCount={wishlistItems.length}>
                   <Banner />
+                  <BestSellerSection onAdd={addToCart} onWishlist={handleWishlistToggle} products={products} />
                   <ProductList
-                    products={products}
+                    products={products} // always show all products on home
                     onAdd={addToCart}
-                    onWishlist={addToWishlist}
+                    onWishlist={handleWishlistToggle}
                   />
                   <RecipeSection />
                 </Layout>
@@ -341,7 +367,9 @@ function App() {
                   <ProductsPage
                     products={products}
                     onAdd={addToCart}
-                    onWishlist={addToWishlist}
+                    onWishlist={handleWishlistToggle}
+                    searchTerm={appSearchTerm}
+                    setSearchTerm={setAppSearchTerm}
                   />
                 </Layout>
               }
@@ -353,7 +381,7 @@ function App() {
                   <ProductLanding
                     products={products}
                     onAddToCart={addToCart}
-                    onAddToWishlist={addToWishlist}
+                    onAddToWishlist={handleWishlistToggle}
                   />
                 </Layout>
               }
@@ -391,6 +419,38 @@ function App() {
               element={
                 <Layout cartCount={cartCount} wishlistCount={wishlistItems.length}>
                   <ContactUs />
+                </Layout>
+              }
+            />
+            <Route
+              path="/terms"
+              element={
+                <Layout cartCount={cartCount} wishlistCount={wishlistItems.length}>
+                  <Terms />
+                </Layout>
+              }
+            />
+            <Route
+              path="/privacy"
+              element={
+                <Layout cartCount={cartCount} wishlistCount={wishlistItems.length}>
+                  <PrivacyPolicy />
+                </Layout>
+              }
+            />
+            <Route
+              path="/return-policy"
+              element={
+                <Layout cartCount={cartCount} wishlistCount={wishlistItems.length}>
+                  <ReturnPolicy />
+                </Layout>
+              }
+            />
+            <Route
+              path="/orders"
+              element={
+                <Layout cartCount={cartCount} wishlistCount={wishlistItems.length}>
+                  <OrdersPage />
                 </Layout>
               }
             />

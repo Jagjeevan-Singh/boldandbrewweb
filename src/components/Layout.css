@@ -1,14 +1,14 @@
 /* Layout.css */
 
+
 .layout-wrapper {
-  position: relative;
   min-height: 100vh;
   display: flex;
   flex-direction: column;
+  position: relative;
 }
 
-.main-content {
-  margin-top: 70px; /* Adjust based on actual Header height */
+  margin-top: 110px; /* 34px banner + ~76px header */
   flex: 1;
   z-index: 1;
   position: relative;

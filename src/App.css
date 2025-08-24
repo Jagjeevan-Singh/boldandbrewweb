@@ -1,6 +1,11 @@
+/* Ensure main content is pushed below banner and header */
+.main-content {
+  margin-top: 110px; /* 34px banner + ~76px header */
+}
 body {
   margin: 0;
   font-family: 'Poppins', sans-serif;
+ 
   background: none;
   color: #3e2723;
   overflow-x: hidden;

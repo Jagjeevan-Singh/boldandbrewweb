@@ -11,6 +11,9 @@
   max-height: 100vh; /* don't exceed screen height */
   object-fit: contain; /* show full image */
   background-color: #000; /* fill space if aspect ratio doesn't match */
+  padding-top: 0px;
+  top: 100px;
+  margin-top: 48px;
 }
 .slick-prev,
 .slick-next {

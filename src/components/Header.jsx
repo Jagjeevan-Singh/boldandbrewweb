@@ -1,4 +1,4 @@
-import { NavLink } from 'react-router-dom';
+import { NavLink, useNavigate } from 'react-router-dom';
 import { FaShoppingCart, FaUser, FaSearch, FaHeart } from 'react-icons/fa';
 import { CircularText } from '../blocks/TextAnimations/CircularText/CircularText.jsx';
 import './Header.css';
@@ -8,7 +8,8 @@ import SideBar from './SideBar';
 
 function Header({ cartCount = 0, wishlistCount = 0 }) {
   const [showSearch, setShowSearch] = useState(false);
-  const [searchTerm, setSearchTerm] = useState('');
+  const [localSearch, setLocalSearch] = useState('');
+  const navigate = useNavigate();
 
   const handleSearchClick = () => {
     setShowSearch(true);
@@ -16,14 +17,18 @@ function Header({ cartCount = 0, wishlistCount = 0 }) {
 
   const handleSearchBlur = () => {
     setShowSearch(false);
-    setSearchTerm('');
+    setLocalSearch('');
   };
 
   const handleSearchSubmit = (e) => {
     e.preventDefault();
-    if (searchTerm.trim()) {
-      // You can redirect or handle search here
-      console.log('Search for:', searchTerm);
+    if (localSearch.trim()) {
+      if (typeof window.setAppSearchTerm === 'function') {
+        window.setAppSearchTerm(localSearch);
+      }
+      setShowSearch(false);
+      setLocalSearch('');
+      navigate('/products');
     }
   };
   return (
@@ -51,21 +56,28 @@ function Header({ cartCount = 0, wishlistCount = 0 }) {
           </button>
         )}
         {showSearch && (
-          <form onSubmit={handleSearchSubmit} className="search-form">
-            <label htmlFor="header-search" className="visually-hidden">Search</label>
-            <input
-              id="header-search"
-              name="search"
-              type="text"
-              className="search-input"
-              autoFocus
-              placeholder='What are you looking for?'
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              onBlur={handleSearchBlur}
-              autoComplete="off"
-            />
-          </form>
+          <div className="search-overlay">
+            <form onSubmit={handleSearchSubmit} className="search-overlay-form">
+              <label htmlFor="header-search" className="visually-hidden">Search</label>
+              <input
+                id="header-search"
+                name="search"
+                type="text"
+                className="search-overlay-input"
+                autoFocus
+                placeholder="Search"
+                value={localSearch}
+                onChange={e => setLocalSearch(e.target.value)}
+                autoComplete="off"
+              />
+              <button type="submit" className="search-overlay-icon-btn" aria-label="Search">
+                <FaSearch />
+              </button>
+              <button type="button" className="search-overlay-close" aria-label="Close search" onClick={() => setShowSearch(false)}>
+                &#10005;
+              </button>
+            </form>
+          </div>
         )}
         <NavLink to="/wishlist" className="icon-navlink">
           <FaHeart />

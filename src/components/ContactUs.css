@@ -1,10 +1,5 @@
 /* ContactUs.css */
-@font-face {
-  font-family: 'LuxuriousScript-Regular';
-  src: url('./assets/fonts/LuxuriousScript-Regular.ttf') format('truetype');
-  font-weight: 800;
-  font-style: normal;
-}
+@import url('https://fonts.googleapis.com/css2?family=Luxurious+Script&display=swap');
 
 .contact-container {
   max-width: 1000px;

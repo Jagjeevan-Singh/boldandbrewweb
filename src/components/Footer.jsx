@@ -1,4 +1,5 @@
 import React from 'react';
+import { NavLink } from 'react-router-dom';
 import './Footer.css';
 import logo from '../assets/logo.png'; // Adjust the path as necessary
 
@@ -18,11 +19,11 @@ const Footer = () => {
         <div className="footer-links-section">
           <h2>Company</h2>
           <ul>
-            <li><a href="/about">About Us</a></li>
-            <li><a href="/contact">Contact Us</a></li>
+            <li><NavLink to="/about">About Us</NavLink></li>
+            <li><NavLink to="/contact">Contact Us</NavLink></li>
             <li><a href="/careers">Careers</a></li>
             <li><a href="/blog">Blog</a></li>
-            <li><a href="/blog">Track Order</a></li>
+            <li><NavLink to="/orders">Track Order</NavLink></li>
           </ul>
         </div>
 
@@ -30,9 +31,9 @@ const Footer = () => {
         <div className="footer-legal-section">
           <h2>Legal</h2>
           <ul>
-            <li><a href="/terms">Terms & Conditions</a></li>
-            <li><a href="/privacy">Privacy Policy</a></li>
-            <li><a href="/privacy">Return Policy</a></li>
+            <li><NavLink to="/terms">Terms & Conditions</NavLink></li>
+            <li><NavLink to="/privacy">Privacy Policy</NavLink></li>
+            <li><NavLink to="/return-policy">Return Policy</NavLink></li>
           </ul>
           <div className="footer-social-icons">
             <a href="#"><i className="fab fa-facebook-f"></i></a>
