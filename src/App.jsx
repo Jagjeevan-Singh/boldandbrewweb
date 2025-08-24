@@ -1,27 +1,26 @@
 import { HashRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { useState, useEffect } from 'react';
-import Header from './components/Header';
-import Footer from './components/Footer';
+
+import Layout from './components/Layout';
+
 import Banner from './components/Banner';
 import ProductList from './components/ProductList';
 import ProductLanding from './components/ProductLanding';
 import ProductsPage from './components/ProductsPage';
 import Cart from './components/Cart';
 import Wishlist from './components/Wishlist';
-import Login from './components/Login';
 import About from './components/About';
 import RecipeSection from './components/RecipeSection';
 import RecipePage from './components/RecipePage';
 import AdminLogin from './components/AdminLogin';
+import Login from './components/Login';
 import AdminDashboard from './components/AdminDashboard';
+import ContactUs from './components/ContactUs.jsx';
 import { getAuth, onAuthStateChanged } from 'firebase/auth';
 import { getFirestore, doc, getDoc } from 'firebase/firestore';
-
-// CORRECTED IMPORTS: Assuming AdminLogin.js and AdminDashboard.js are in the same folder as App.jsx
 import './App.css';
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
-
 import espressoImg from './assets/espresso.jpg';
 import cappuccinoImg from './assets/cappuccino.jpg';
 import latteImg from './assets/latte.jpg';
@@ -29,6 +28,9 @@ import VanillaImg from './assets/Vanilla.jpg';
 import HazelnutImg from './assets/Hazelnut.jpg';
 import PureImg from './assets/100instant.jpg';
 import StrongImg from './assets/7030instant.jpg';
+import logo from './assets/logo.png';
+import DotGrid from './blocks/Backgrounds/DotGrid/DotGrid.jsx';
+import { CircularText } from './blocks/TextAnimations/CircularText/CircularText.jsx';
 
 const auth = getAuth();
 const db = getFirestore();
@@ -70,6 +72,7 @@ function App() {
   const [loggedIn, setLoggedIn] = useState(false);
   const [userRole, setUserRole] = useState(null);
   const [loadingUser, setLoadingUser] = useState(true);
+  const [animationDone, setAnimationDone] = useState(false);
 
   const [products] = useState([
     {
@@ -185,16 +188,21 @@ function App() {
     return () => unsubscribe();
   }, []);
 
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setAnimationDone(true);
+    }, 3100);
+    return () => clearTimeout(timer);
+  }, []);
+
   const addToCart = (product) => {
     setCartItems((prev) => {
       const existing = prev.find((item) => item.id === product.id);
-      if (existing) {
-        return prev.map((item) =>
-          item.id === product.id ? { ...item, quantity: item.quantity + 1 } : item
-        );
-      } else {
-        return [...prev, { ...product, quantity: 1 }];
-      }
+      return existing
+        ? prev.map((item) =>
+            item.id === product.id ? { ...item, quantity: item.quantity + 1 } : item
+          )
+        : [...prev, { ...product, quantity: 1 }];
     });
   };
 
@@ -242,11 +250,65 @@ function App() {
   }
 
   return (
-    <Router>
-      <div className="app-container">
-        <Header cartCount={cartCount} wishlistCount={wishlistItems.length} />
-        <div className="main-content">
+    <>
+      {/* Logo animation before app loads */}
+      {!animationDone && (
+        <div id="logo-anim-container" style={{ position: 'fixed', inset: 0, zIndex: 1 }}>
+          <img id="logo-anim" src={logo} alt="Bold & Brew Logo" />
+        </div>
+      )}
+      {/* Main App Content Layer */}
+      <div
+        className="app-container"
+        style={{
+          opacity: animationDone ? 1 : 0,
+          transition: 'opacity 1s ease-in',
+          position: 'relative',
+          zIndex: 1,
+        }}
+      >
+        {/* Background Layer */}
+        <div style={{ height: '100vh', position: 'fixed', inset: 0, zIndex: 0, width: '100%' }}>
+          <DotGrid
+            dotSize={2.5}
+            gap={20}
+            baseColor="#b19d8e"
+            activeColor="#1c1c1c"
+            proximity={120}
+            shockRadius={250}
+            shockStrength={5}
+            resistance={500}
+            returnDuration={3}
+          />
+        </div>
+        <Router>
           <Routes>
+            {/* Cart Page */}
+            <Route
+              path="/cart"
+              element={
+                <Layout cartCount={cartCount} wishlistCount={wishlistItems.length}>
+                  <Cart
+                    cartItems={cartItems}
+                    onRemove={removeFromCart}
+                    onUpdateQuantity={updateCartQuantity}
+                    onMoveToWishlist={moveToWishlist}
+                    onApplyCoupon={() => {}}
+                    coupon={''}
+                    setCoupon={() => {}}
+                    couponError={''}
+                    onCheckout={() => {}}
+                  />
+                </Layout>
+              }
+            />
+            {/* Login Route */}
+            <Route path="/login" element={
+              <Layout cartCount={cartCount} wishlistCount={wishlistItems.length}>
+                <Login onLogin={() => setLoggedIn(true)} />
+              </Layout>
+            } />
+            {/* Admin Routes */}
             <Route path="/admin-login" element={<AdminLogin />} />
             <Route
               path="/admin/*"
@@ -256,21 +318,11 @@ function App() {
                 </ProtectedAdminRoute>
               }
             />
-
-            {/* <Route
-              path="/admin-dashboard"
-              element={
-                <ProtectedAdminRoute>
-                  <AdminDashboard />
-                </ProtectedAdminRoute>
-              }
-             /> */}
-
-
+            {/* Home Page */}
             <Route
               path="/"
               element={
-                <>
+                <Layout cartCount={cartCount} wishlistCount={wishlistItems.length}>
                   <Banner />
                   <ProductList
                     products={products}
@@ -278,69 +330,74 @@ function App() {
                     onWishlist={addToWishlist}
                   />
                   <RecipeSection />
-                </>
+                </Layout>
               }
             />
+            {/* Other Pages */}
             <Route
               path="/products"
               element={
-                <ProductsPage
-                  products={products}
-                  onAdd={addToCart}
-                  onWishlist={addToWishlist}
-                />
+                <Layout cartCount={cartCount} wishlistCount={wishlistItems.length}>
+                  <ProductsPage
+                    products={products}
+                    onAdd={addToCart}
+                    onWishlist={addToWishlist}
+                  />
+                </Layout>
               }
             />
             <Route
               path="/product/:id"
               element={
-                <ProductLanding
-                  products={products}
-                  onAddToCart={addToCart}
-                  onAddToWishlist={addToWishlist}
-                />
-              }
-            />
-            <Route
-              path="/cart"
-              element={
-                <Cart
-                  cartItems={cartItems}
-                  onRemove={removeFromCart}
-                  onUpdateQuantity={updateCartQuantity}
-                  onMoveToWishlist={moveToWishlist}
-                />
+                <Layout cartCount={cartCount} wishlistCount={wishlistItems.length}>
+                  <ProductLanding
+                    products={products}
+                    onAddToCart={addToCart}
+                    onAddToWishlist={addToWishlist}
+                  />
+                </Layout>
               }
             />
             <Route
               path="/wishlist"
               element={
-                <Wishlist
-                  items={wishlistItems}
-                  onRemove={removeFromWishlist}
-                  onMoveToCart={moveToCart}
-                />
+                <Layout cartCount={cartCount} wishlistCount={wishlistItems.length}>
+                  <Wishlist
+                    items={wishlistItems}
+                    onRemove={removeFromWishlist}
+                    onMoveToCart={moveToCart}
+                  />
+                </Layout>
               }
             />
-            <Route path="/recipe/:type" element={<RecipePage />} />
-            <Route path="/about" element={<About />} />
             <Route
-              path="/login"
+              path="/recipe/:type"
               element={
-                !loggedIn ? (
-                  <Login onLogin={() => setLoggedIn(true)} />
-                ) : (
-                  <div style={{ padding: '2rem', textAlign: 'center' }}>
-                    <h2>You are already logged in</h2>
-                  </div>
-                )
+                <Layout cartCount={cartCount} wishlistCount={wishlistItems.length}>
+                  <RecipePage />
+                </Layout>
+              }
+            />
+            <Route
+              path="/about"
+              element={
+                <Layout cartCount={cartCount} wishlistCount={wishlistItems.length}>
+                  <About />
+                </Layout>
+              }
+            />
+            <Route
+              path="/contact"
+              element={
+                <Layout cartCount={cartCount} wishlistCount={wishlistItems.length}>
+                  <ContactUs />
+                </Layout>
               }
             />
           </Routes>
-        </div>
-        <Footer />
+        </Router>
       </div>
-    </Router>
+    </>
   );
 }
 

@@ -1,6 +1,6 @@
 .products-page {
   padding: 4rem 2rem;
-  background: linear-gradient(to right, #fff3e0, #ffe0b2);
+  background: none;
   min-height: 100vh;
   display: flex;
   flex-direction: column;

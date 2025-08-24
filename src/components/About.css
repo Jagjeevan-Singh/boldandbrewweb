@@ -1,0 +1,36 @@
+/* About.css */
+
+.about-container {
+  max-width: 3000px;
+  margin: 100px auto 96px auto; /* Adjusted for Header height */
+  padding: 3rem 4rem;
+  background: none;
+  border-radius: 1.5rem;
+  font-family: 'Poppins', sans-serif;
+  text-align: center;
+}
+
+.about-title {
+  font-size: 3rem;
+  font-weight: 700;
+  color: #3e2723;
+  margin-bottom: 1.5rem;
+}
+
+.about-description {
+  margin-top: 50px;
+  font-size: 1.5rem;
+  color: #5e4a42;
+  line-height: 2;
+  max-width: 1500px;
+  margin: 0 auto 2.5rem auto;
+}
+
+.about-image {
+  width: 100%;
+  height: 300px;
+  background: url('../assets/logo.png') no-repeat center center;
+  background-size:contain;
+  border-radius: 1rem;
+  box-shadow: inset 0 0 0 2000px rgba(255, 255, 255, 0.1);
+}
